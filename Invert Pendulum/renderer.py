@@ -1,12 +1,35 @@
 import pygame
 import numpy as np
 
+
+class Button:
+    def __init__(self, x, y, w, h, text, color=(50, 50, 60)):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.text = text
+        self.base_color = color
+        self.active_color = (80, 80, 100)
+        self.timer = 0
+        
+    def press(self):
+        self.timer = 5
+
+    def draw(self, screen, font):
+        color = self.active_color if self.timer > 0 else self.base_color
+        if self.timer > 0: self.timer -= 1
+        
+        pygame.draw.rect(screen, color, self.rect, border_radius=5)
+        pygame.draw.rect(screen, (100, 100, 110), self.rect, 2, border_radius=5)
+        txt = font.render(self.text, True, (200, 200, 210))
+        screen.blit(txt, (self.rect.centerx - txt.get_width()//2, 
+                          self.rect.centery - txt.get_height()//2))
+
+
 class PendulumRenderer:
     def __init__(self, width, height, scale):
         self.width = width
         self.height = height
         self.scale = scale
-        self.offset = -200
+        self.offset = -100
         self.colors = {
             "BG": (15, 15, 20),
             "TRACK": (70, 70, 80),
@@ -43,7 +66,7 @@ class PendulumRenderer:
         
         screen.blit(overlay, (0, 0))
 
-    def draw_world(self, screen, state, u, track_limit, L, speed, paused, mode_str, font):
+    def draw_world(self, screen, state, u, track_limit, L, speed, paused, mode_str, font, push_button):
         x, x_dot, theta, theta_dot = state
         screen.fill(self.colors["BG"])
         
@@ -74,8 +97,14 @@ class PendulumRenderer:
 
         # 4. Draw HUD
         status = "PAUSED" if paused else "RUNNING"
-        info = (f"{mode_str} | x={x:.3f}  theta={theta:.3f}  "
+        info = (f"{mode_str} | x={state[0]:.3f}  theta={state[2]:.3f}  "
                 f"u={u:.2f}N  speed={speed:.2f}x  {status}")
+        
+        text_surface = font.render(info, True, self.colors["TEXT"])
+        screen.blit(text_surface, (20, 20))
+
+        # 5. Draw the Button
+        push_button.draw(screen, font)
         
         text_surface = font.render(info, True, self.colors["TEXT"])
         screen.blit(text_surface, (20, 20))

@@ -1,7 +1,8 @@
 import pygame
 import numpy as np
+import random
 from physics import InvertedPendulumPhysics
-from renderer import PendulumRenderer
+from renderer import PendulumRenderer, Button
 
 # Configuration
 S_CONFIG = 1  # 1 for Upright, -1 for Downward
@@ -11,14 +12,15 @@ M, m, L, g = 1, 0.05, 0.5, 9.81
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1250, 800))
-    pygame.display.set_caption("Inverted Pendulum - Modular")
+    pygame.display.set_caption("Inverted Pendulum")
     
     # Initialize Physics and Renderer
     sim = InvertedPendulumPhysics(M, m, L, g)
     renderer = PendulumRenderer(1250, 800, 800)
+    push_btn = Button(20, 60, 120, 40, "NUDGE")
     
     # Setup LQR
-    K = sim.get_lqr_gain(s=S_CONFIG, Q_diag=[1, 100, 10, 100], R_val=0.05)
+    K = sim.get_lqr_gain(s=S_CONFIG, Q_diag=[1, 50, 10, 100], R_val=0.05)
     
     # State: [x, x_dot, theta, theta_dot]
     if S_CONFIG == 1:
@@ -41,6 +43,14 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if push_btn.rect.collidepoint(event.pos):
+                    push_btn.press()
+                    nudge = random.uniform(-0.5, 0.5)
+                    state[2] += nudge
+                    state[3] = 0
+                
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     paused = not paused
@@ -67,7 +77,7 @@ def main():
         # Draw everything using the renderer
         renderer.draw_world(
             screen, state, u, TRACK_LIMIT, sim.L, 
-            speed_multiplier, paused, mode_str, font
+            speed_multiplier, paused, mode_str, font, push_btn
         )
         
         pygame.display.flip()
