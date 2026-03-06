@@ -5,7 +5,7 @@ from scipy.linalg import solve_continuous_are
 class InvertedPendulumPhysics:
     def __init__(self, M=1.0, m=0.05, L=0.5, g=9.81):
         self.M = M
-        self.m = M
+        self.m = m
         self.L = L
         self.g = g
         
@@ -38,3 +38,18 @@ class InvertedPendulumPhysics:
     def step(self, state, u, dt):
         sol = solve_ivp(self.dynamics, [0, dt], state, args=(u,), t_eval=[dt])
         return sol.y[:, -1]
+    
+    def swing_up(self, state, k_push=28, k_center=1.2):
+        x, x_dot, theta, theta_dot = state
+
+        # Swing pumping
+        u_swing = k_push * np.tanh(1.5 * theta_dot * np.cos(theta))
+
+        # Centering
+        u_center = -k_center * x - 0.5 * x_dot
+
+        # Reduce force near track edges
+        track_limit = 1.0
+        scale = max(0.0, 1 - abs(x) / track_limit)
+
+        return scale * u_swing + u_center

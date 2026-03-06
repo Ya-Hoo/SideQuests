@@ -29,7 +29,7 @@ class PendulumRenderer:
         self.width = width
         self.height = height
         self.scale = scale
-        self.offset = -100
+        self.offset = -50
         self.colors = {
             "BG": (15, 15, 20),
             "TRACK": (70, 70, 80),
