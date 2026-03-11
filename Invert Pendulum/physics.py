@@ -39,7 +39,7 @@ class InvertedPendulumPhysics:
         sol = solve_ivp(self.dynamics, [0, dt], state, args=(u,), t_eval=[dt])
         return sol.y[:, -1]
     
-    def swing_up(self, state, k_push=28, k_center=1.2):
+    def swing_up(self, state, k_push=3.5, k_center=1.2):
         x, x_dot, theta, theta_dot = state
 
         # Swing pumping

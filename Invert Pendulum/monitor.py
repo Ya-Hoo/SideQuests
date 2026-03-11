@@ -22,43 +22,48 @@ class SimulationMonitor:
         self.x.append(x)
         self.x_dot.append(x_dot)
 
-        self.theta.append(theta)
+        self.theta.append(abs(theta))
         self.theta_dot.append(theta_dot)
 
         self.u.append(force)
 
     def plot(self):
-
         t = np.array(self.t)
+        
+        # Create a figure with 5 rows and 1 column
+        # figsize=(width, height) in inches
+        fig, axs = plt.subplots(5, 1, figsize=(10, 15), sharex=True)
+        fig.subplots_adjust(hspace=0.4) # Add space between plots
 
-        plt.figure()
-        plt.plot(t, self.x)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Cart Position (m)")
-        plt.title("Cart Position vs Time")
+        # 1. Cart Position
+        axs[0].plot(t, self.x, color='blue')
+        axs[0].set_ylabel(r"$x$ (m)")
+        axs[0].set_title("Cart Position")
+        axs[0].grid(True, alpha=0.3)
 
-        plt.figure()
-        plt.plot(t, self.x_dot)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Cart Velocity (m/s)")
-        plt.title("Cart Velocity vs Time")
+        # 2. Cart Velocity
+        axs[1].plot(t, self.x_dot, color='darkblue')
+        axs[1].set_ylabel(r"$\dot x$ (m/s)")
+        axs[1].set_title("Cart Velocity")
+        axs[1].grid(True, alpha=0.3)
 
-        plt.figure()
-        plt.plot(t, self.theta)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Pendulum Angle (rad)")
-        plt.title("Pendulum Angle vs Time")
+        # 3. Pendulum Angle
+        axs[2].plot(t, self.theta, color='orange')
+        axs[2].set_ylabel(r"$\theta$ (rad)")
+        axs[2].set_title("Pendulum Angle")
+        axs[2].grid(True, alpha=0.3)
 
-        plt.figure()
-        plt.plot(t, self.theta_dot)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Angular Velocity (rad/s)")
-        plt.title("Pendulum Angular Velocity vs Time")
+        # 4. Angular Velocity
+        axs[3].plot(t, self.theta_dot, color='darkorange')
+        axs[3].set_ylabel(r"$\dot \theta$ (rad/s)")
+        axs[3].set_title("Angular Velocity")
+        axs[3].grid(True, alpha=0.3)
 
-        plt.figure()
-        plt.plot(t, self.u)
-        plt.xlabel("Time (s)")
-        plt.ylabel("Force (N)")
-        plt.title("Control Force vs Time")
+        # 5. Control Force
+        axs[4].plot(t, self.u, color='red')
+        axs[4].set_ylabel(r"$u$ (N)")
+        axs[4].set_xlabel("Time (s)")
+        axs[4].set_title("Control Force (u)")
+        axs[4].grid(True, alpha=0.3)
 
         plt.show()
