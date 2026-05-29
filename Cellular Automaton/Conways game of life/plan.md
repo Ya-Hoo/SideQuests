@@ -9,7 +9,7 @@
 | Mapless approach: store only the live cells and then write a function that fills the rest of the map with dead cells  | 2.1 |
 | Quadtree but im not smart enough yet so gotta wait  | n/a  |
 | Divide maps into halves and halves, check if the portion of map is empty (sum of values), if yes then skip else evaluate | n/a |
-| Keep track of changed cells --> only need to iterate over those | n/a |
+| Keep track of changed cells --> only need to iterate over those | 2.2 |
 
 ## Cells
 

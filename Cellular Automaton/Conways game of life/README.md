@@ -151,17 +151,18 @@ for y in y_range:
 
 Yet, this comes with a problem that the border may shrink at some point due to the decrease in area occupied by live cells, thus to prevent that from happening we keep track of the lowest and highest x and y coordinates the map has occupied before and only update the map when these values are exceeded.
 
-## Stats/progress tracker
+## v2.2
 
-### Performance comparison
+### Implementation
 
-In this evaluation, we made each version compute 10,000 generations of a specific pattern. Each pattern will have 20 trials and then the mean of those (corrected to 3d.p) would be recorded in the table below. Only versions where the implementations are different will be tested. 
-(not finished)
-| Pattern           | v1.1      | v2.0      | v2.1      |
-|-------------------|----------:|----------:|----------:|
-| Glider            |     |     |     |
-| Gosper Glider Gun |     |     |     |
-| Brain             |     |     |     |
-| LWSS              |     |     |     |
-| R-pentomino       |     |     |     |
-| Soup (random)     |     |     |     |
+#### Cells
+
+Same as [2.0](https://github.com/Ya-Foo/Conways-game-of-life#v20)
+
+#### World
+
+Same as [2.1](https://github.com/Ya-Foo/Conways-game-of-life#v21) but the candidates are stored in a set now, which reduces lookup time significantly
+
+#### Patterns and Rendering
+
+Same as [2.1](https://github.com/Ya-Foo/Conways-game-of-life#v21) but efficiency was improved using the regex library
