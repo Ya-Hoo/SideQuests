@@ -24,7 +24,7 @@
 | Improvement  | Version |
 | ------------- | ---: |
 | Make an RLE decoder to import patterns directly from the database of [Conway Life Wiki](https://conwaylife.com/wiki/)  | 1.1 |
-| Maybe try render using matplotlib, pygame or other libraries  | n/a |
+| Maybe try render using matplotlib, pygame or other libraries  | 3.0 |
 | For mapless approach - write a function to fill remaining with dead cells | 2.1 |
 
 ## Other

@@ -157,7 +157,7 @@ Yet, this comes with a problem that the border may shrink at some point due to t
 
 #### Cells
 
-Same as [2.0](https://github.com/Ya-Foo/Conways-game-of-life#v20)
+Same as [2.0](https://github.com/Ya-Foo/Conways-game-of-life#v20) but each cell is a tuple rather than a list, which makes membership test O(1) everywhere. 
 
 #### World
 
@@ -166,3 +166,62 @@ Same as [2.1](https://github.com/Ya-Foo/Conways-game-of-life#v21) but the candid
 #### Patterns and Rendering
 
 Same as [2.1](https://github.com/Ya-Foo/Conways-game-of-life#v21) but efficiency was improved using the regex library
+
+## v3.0
+
+### Implementation
+
+#### Cells
+
+Same as [2.2](https://github.com/Ya-Foo/Conways-game-of-life#v22)
+
+#### World
+
+Same as [2.2](https://github.com/Ya-Foo/Conways-game-of-life#v22)
+
+#### Patterns and Rendering
+
+The Unicode terminal renderer is gone. Instead, pygame draws each live cell as a filled rectangle onto a GPU-backed surface, with a 1-pixel gap between cells to produce a natural grid appearance.
+
+A viewport culling step calculates which cells fall within the visible screen area each frame and skips everything outside of view.
+
+The camera can be panned freely with WASD keys, and the simulation can be paused, stepped, sped up, and slowed down without leaving the window.
+
+The RLE decoder has been refined further: the header is now parsed into a key-value dict (handling optional fields like rule gracefully), the terminal `!` is stripped explicitly, and the final row is correctly recovered even when the file omits the trailing `$`.
+
+#### Code structure
+
+Major restructuring of the code as it has been split into four modules
+
+| File | Responsibility |
+| --- | ---: |
+| `life.py` | Entry point — scans `all/`, initialises pygame, runs the main loop |
+| `logic.py` | Pure Conway rules — `nextGen` and `update`, no pygame dependency |
+| `renderer.py` | All drawing — world, ghost preview, HUD, pattern menu panel |
+| `controls.py` | All input — keyboard events, mouse clicks, panning, menu scroll, ghost updates |
+
+### Interactive controls
+ 
+| Key / Action | Effect |
+| --- | ---: |
+| `Space` | Pause / resume |
+| `+` / `-` | Increase / decrease simulation speed (1–60 FPS) |
+| `WASD` | Pan the camera |
+| Left click | Toggle individual cell alive / dead |
+| `C` | Clear all cells and reset generation counter |
+| `R` | Fill a 50×50 region with a random pattern (additive) |
+| `M` | Open / close the pattern browser |
+| `↑` / `↓` (in menu) | Navigate patterns (hold for continuous scroll) |
+| `Enter` (in menu) | Select pattern for placement |
+| Type (in menu) | Filter patterns by name in real time |
+| Click (placing) | Stamp pattern at cursor position |
+| `Esc` (placing) | Cancel placement |
+| `Q` / `Esc` | Quit |
+
+### Pattern browser
+ 
+Pressing `M` opens a side panel that lists every `.rle` file found in the `all/` folder automatically — no code changes needed when new patterns are added.
+ 
+The panel includes a live search bar: typing filters the list by substring match (case-insensitive) and shows a result count. Holding `↑` or `↓` scrolls continuously through the list after an initial delay, making it practical to navigate libraries with thousands of entries.
+ 
+Once a pattern is selected, a translucent blue ghost preview follows the cursor so the exact placement is visible before committing. The simulation is paused automatically during placement.
